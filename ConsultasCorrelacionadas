@@ -1,0 +1,30 @@
+use Northwind
+/******************consultas correlacionadas*********************/
+
+/*
+	Consultas correlacionadas analizarla
+	consulta las ordenes que contienen el producto 23 y que su cantidad fue a 20 
+*/
+
+select  o.customerid, o.orderid, o.orderdate from orders as o
+where
+      (select d.Quantity from [Order Details] as d 
+      where d.ProductID = 23 and o.orderID=d.OrderID ) > 20
+
+
+/* Otra consulta correlacionada consulta todos los clientes que tienen al menos una orden creada. */
+
+select  c.companyName, c.country, c.contactName
+	from customers as c where 
+		exists  ( select o.customerid from orders as o 
+					where c.CustomerID = o.CustomerID
+				  )
+
+/*	Otra consulta correlacionada consulta todos los clientes que no tienen ordenes aun. */
+
+select  c.companyName, c.country, c.contactName
+	from customers as c where 
+		 not exists  ( select * from orders as o 
+					where c.CustomerID = o.CustomerID
+				  )
+
